@@ -9,12 +9,18 @@ with open(filename, 'r') as f:
 def eval_list(lhs,rhs):
     mul = [rhs[0]*rhs[1]]
     add = [rhs[0]+rhs[1]]
+    cat = [int(str(rhs[0])+str(rhs[1]))]
     if len(rhs) == 2:
-        return lhs == mul[0] or lhs == add[0]
+        return (lhs == mul[0] or
+                lhs == add[0] or
+                lhs == cat[0])
     else:
         mul.extend(rhs[2:])
         add.extend(rhs[2:])
-        return eval_list(lhs, mul) or eval_list(lhs, add)
+        cat.extend(rhs[2:])
+        return (eval_list(lhs, mul) or
+                eval_list(lhs, add) or
+                eval_list(lhs, cat))
 
 count = 0
     
@@ -25,6 +31,6 @@ for line in lines:
     rhs = [int(x) for x in rhs]
     if eval_list(lhs, rhs):
         count += lhs
-print('Part 1:', count)
+print('Part 2:', count)
     
                            

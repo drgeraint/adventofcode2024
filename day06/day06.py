@@ -18,6 +18,7 @@ move = None
 
 def up(pos):
     global move
+    global obstacles
     if pos[0] == 0:
         return None
     nxt = (pos[0]-1,pos[1])
@@ -29,6 +30,7 @@ def up(pos):
 
 def right(pos):
     global move
+    global obstacles
     if pos[1] == ncol-1:
         return None
     nxt = (pos[0],pos[1]+1)
@@ -40,6 +42,7 @@ def right(pos):
     
 def down(pos):
     global move
+    global obstacles
     if pos[0] == nrow-1:
         return None
     nxt = (pos[0]+1,pos[1])
@@ -51,6 +54,7 @@ def down(pos):
     
 def left(pos):
     global move
+    global obstacles
     if pos[1] == 0:
         return None
     nxt = (pos[0],pos[1]-1)
@@ -69,20 +73,36 @@ for line in lines:
         c = s.span()[0]
         start = (row,c)
         if line[c] == 'V':
-            move = down
+            start_move = down
         elif line[c] == '^':
-            move = up
+            start_move = up
         elif line[c] == '<':
-            move = left
+            start_move = left
         elif line[c] == '>':
-            line = right
+            start_move = right
     row += 1
 
 pos = start
-row = pos[0]
-col = pos[1]
+move = start_move
 while pos:
     positions.add(pos)
     pos = move(pos)
 print('Part 1:', len(positions))
 
+count = 0
+for row in range(0,nrow):
+    for col in range(0,ncol):
+        if (row,col) not in obstacles:
+            positions = set()
+            pos = start
+            move = start_move
+            obstacles.add((row,col))
+            stop = False
+            while pos and not stop:
+                positions.add((pos,move))
+                pos = move(pos)
+                if (pos,move) in positions:
+                    count += 1
+                    stop = True
+            obstacles.remove((row,col))
+print('Part 2:', count)

@@ -18,7 +18,6 @@ move = None
 
 def up(pos):
     global move
-    global obstacles
     if pos[0] == 0:
         return None
     nxt = (pos[0]-1,pos[1])
@@ -30,7 +29,6 @@ def up(pos):
 
 def right(pos):
     global move
-    global obstacles
     if pos[1] == ncol-1:
         return None
     nxt = (pos[0],pos[1]+1)
@@ -42,7 +40,6 @@ def right(pos):
     
 def down(pos):
     global move
-    global obstacles
     if pos[0] == nrow-1:
         return None
     nxt = (pos[0]+1,pos[1])
@@ -54,7 +51,6 @@ def down(pos):
     
 def left(pos):
     global move
-    global obstacles
     if pos[1] == 0:
         return None
     nxt = (pos[0],pos[1]-1)

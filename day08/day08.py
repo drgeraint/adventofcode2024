@@ -37,24 +37,16 @@ for freq in antennae:
                         n[1] >= 0   and
                         n[1] < nrow):
                         antinode1.add(n)
-                m = dy/dx
-                c = a[1] - m*a[0]
-                for col in range(0, ncol):
-                    row = m*col + c
-                    if (row - int(row) < 0.00000000000001 and
-                        row >= 0                           and
-                        row < nrow):
-                        antinode2.add((row,col))
+                for m in range(min(-nrow,-ncol),
+                               max( nrow, ncol)):
+                    e = (a[0]-m*dx,a[1]-m*dy)
+                    f = (b[0]+m*dx,b[1]+m*dy)
+                    for n in [e,f]:
+                        if (n[0] >= 0   and
+                            n[0] < ncol and
+                            n[1] >= 0   and
+                            n[1] < nrow):
+                            antinode2.add(n)
                     
 print('Part 1:', len(antinode1))
 print('Part 2:', len(antinode2))
-
-# Test input works, part 2 input does not
-# An integer test precision problem?
-# 982  is too low
-# using:  row == int(row)
-# 1070 is too high
-# using: row - int(row) < 0.00001
-# 991  is right answer for someone else
-# 1064 is right answer for someone else
-# using: row - int(row) < 0.000000000000001

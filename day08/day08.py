@@ -50,3 +50,4 @@ for freq in antennae:
                     
 print('Part 1:', len(antinode1))
 print('Part 2:', len(antinode2))
+

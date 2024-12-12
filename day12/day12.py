@@ -18,6 +18,10 @@ class Region:
         r,c = pos        
         self.plant = lines[r][c]
         self.plots = set()
+        self.edges = { 't': set(),
+                       'b': set(),
+                       'l': set(),
+                       'r': set() }
         self.add(pos)
         
     def add(self, pos):
@@ -44,8 +48,43 @@ class Region:
                     area += 1
         return area
 
-    def cost(self):
+    def sides(self):
+        for pos in self.plots:
+            r,c = pos
+            if (r-1,c) not in self.plots:
+                self.edges['t'].add(pos)
+            if (r+1,c) not in self.plots:
+                self.edges['b'].add(pos)
+            if (r,c-1) not in self.plots:
+                self.edges['l'].add(pos)
+            if (r,c+1) not in self.plots:
+                self.edges['r'].add(pos)
+        for e in ['t','b']:
+            removal = set()
+            for pos in self.edges[e]:
+                r,c = pos
+                if (r,c-1) in self.edges[e]:
+                    removal.add(pos)
+            for pos in removal:
+                self.edges[e].remove(pos)
+        for e in ['l','r']:
+            removal = set()
+            for pos in self.edges[e]:
+                r,c = pos
+                if (r+1,c) in self.edges[e]:
+                    removal.add(pos)
+            for pos in removal:
+                self.edges[e].remove(pos)
+        sides = 0
+        for e in ['t','b','l','r']:
+            sides += len(self.edges[e])
+        return sides
+            
+    def cost1(self):
         return self.len()*self.area()
+    
+    def cost2(self):
+        return self.len()*self.sides()
     
     def print(self):
         print('Region ('+self.plant+'):', self.plots)
@@ -61,6 +100,10 @@ for row in range(0,nrows):
 
 cost1 = 0
 for region in regions:
-    cost1 += region.cost()
+    cost1 += region.cost1()
 print('Part 1:', cost1)
 
+cost2 = 0
+for region in regions:
+    cost2 += region.cost2()
+print('Part 2:', cost2)

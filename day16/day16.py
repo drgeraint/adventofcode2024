@@ -16,6 +16,7 @@ blocks = set()
 spaces = set()
 visited = set()
 costs  = dict()
+steps  = dict()
 
 for row in range(0,ncols):
     for col in range(0,nrows):
@@ -113,3 +114,85 @@ traverse(start,'E')
 answer1 = min(costs[end].values())
 print('Part 1:', answer1)
 print(costs[end])
+
+score = answer1
+
+def display_path(path):
+    for row in range(0,nrows):
+        line = ''
+        for col in range(0,ncols):
+            if start == (row,col):
+                c = 'S'
+            elif end == (row,col):
+                c = 'E'
+            elif (row,col) in blocks:
+                c = '#'
+            elif (row,col) in spaces:
+                if (row,col) in path:
+                    c = '.'
+                else:
+                    c = ' '
+            else:
+                error('Undefined block:',row,col)
+            line = line+c            
+        print(line)
+
+routes = []
+paths = []
+paths.append([end])
+
+while len(paths) > 0:
+    for path in paths:
+        r,c = path[-1]
+        for pos in [(r-1,c),(r+1,c),(r,c-1),(r,c+1)]:
+            new_path = path.copy()
+            new_path.append(pos)
+            if pos == start:
+                #print('Adding:', new_path)
+                routes.append(new_path)
+            elif pos in costs:
+                m = min(costs[(r,c)].values())
+                if (m-1 in costs[pos].values() or
+                    m-1001 in costs[pos].values() or
+                    m+999  in costs[pos].values()):
+                    paths.append(new_path)
+        paths.remove(path)
+
+def cost_pair(pos0,pos1,direction):
+    r0,c0 = pos0
+    r1,c1 = pos1
+    if (r1 == r0 and
+        c1 == c0+1):
+        new_direction = 'E'
+    elif (r1 == r0 and
+          c1 == c0-1):
+        new_direction = 'W'
+    elif (r1 == r0-1 and
+          c1 == c0):
+        new_direction = 'N'
+    elif (r1 == r0+1 and
+          c1 == c0):
+        new_direction = 'S'
+    if direction == new_direction:
+        cost = 1
+    else:
+        cost = 1001
+    return (cost,new_direction)
+        
+def cost_route(route):
+    cost = 0
+    direction = 'E'
+    for i in range(1,len(route)):
+        pair_cost,direction = cost_pair(route[i-1],route[i],direction)
+        cost += pair_cost
+    return cost
+
+best = set()
+for path in routes:
+    path = path[-1::-1]
+    cost = cost_route(path)
+    if cost == answer1:
+        for pos in path:
+            best.add(pos)
+        
+print('Part 2:', len(best))

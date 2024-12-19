@@ -47,5 +47,19 @@ def explore(pos):
                 explore(posn)
 
 explore((0,0))
-print('Part 1:', steps[(nrows-1,ncols-1)])
+answer1 = steps[(ncols-1,nrows-1)]
+print('Part 1:', answer1)
             
+flag = True
+count = nline
+while flag:
+    x,y = [int(n) for n in lines[count].split(',')]
+    corrupt.add((x,y))
+    steps = {(0,0):0}
+    explore((0,0))
+    if (ncols-1,nrows-1) not in steps:
+        flag = False
+    else:
+        count += 1
+        
+print('Part 2:', lines[count])
